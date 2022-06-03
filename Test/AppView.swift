@@ -18,7 +18,7 @@ struct User: Equatable {
 
 struct AppState: Equatable {
 	var updateUser: UpdateUserState?
-	var isUpdateUserViewPresented = false
+  var isUpdateUserViewPresented: Bool { updateUser != nil }
 	var user: User?
 }
 enum AppAction: Equatable {
@@ -31,14 +31,15 @@ struct AppEnvironment {}
 let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, env in
 	switch action {
 	case .setUpdateUserSheet(let isPresented):
-		state.updateUser = .init(user: state.user)
-		state.isUpdateUserViewPresented = isPresented
+    if isPresented {
+      state.updateUser = .init(user: state.user)
+    } else {
+      state.updateUser = nil
+    }
 		return .none
 	case .updateUser(.userUpdated(.success(let user))):
 		state.user = user
-		state.isUpdateUserViewPresented = false
-		state.updateUser = nil
-		return .none
+    return Effect(value: .setUpdateUserSheet(isPresented: false))
 	default:
 		return .none
 	}
@@ -49,10 +50,18 @@ struct AppView: View {
 
     var body: some View {
 		WithViewStore(store) { viewStore in
+      VStack {
+        if let user = viewStore.user {
+          HStack {
+            Text("User:")
+            Text(String(describing: user))
+          }
+        }
         Text("Tap me to show a modal that you can set the user username and open it again and update it 😅")
-				.onTapGesture {
-					viewStore.send(.setUpdateUserSheet(isPresented: true))
-				}
+        .onTapGesture {
+          viewStore.send(.setUpdateUserSheet(isPresented: true))
+        }
+      }
 			.sheet(
 				isPresented: viewStore.binding(
 					get: \.isUpdateUserViewPresented,
