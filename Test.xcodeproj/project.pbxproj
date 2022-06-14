@@ -11,7 +11,6 @@
 		42C38F5C284A92B900159AC9 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C38F5B284A92B900159AC9 /* AppView.swift */; };
 		42C38F5E284A92BC00159AC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42C38F5D284A92BC00159AC9 /* Assets.xcassets */; };
 		42C38F61284A92BC00159AC9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42C38F60284A92BC00159AC9 /* Preview Assets.xcassets */; };
-		42C38F6B284A95D500159AC9 /* UpdateUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C38F6A284A95D500159AC9 /* UpdateUserView.swift */; };
 		E9910416284AA28B005B4382 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = E9910415284AA28B005B4382 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
@@ -21,7 +20,6 @@
 		42C38F5B284A92B900159AC9 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 		42C38F5D284A92BC00159AC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		42C38F60284A92BC00159AC9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		42C38F6A284A95D500159AC9 /* UpdateUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUserView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +55,6 @@
 			children = (
 				42C38F59284A92B900159AC9 /* TestApp.swift */,
 				42C38F5B284A92B900159AC9 /* AppView.swift */,
-				42C38F6A284A95D500159AC9 /* UpdateUserView.swift */,
 				42C38F5D284A92BC00159AC9 /* Assets.xcassets */,
 				42C38F5F284A92BC00159AC9 /* Preview Content */,
 			);
@@ -150,7 +147,6 @@
 			files = (
 				42C38F5C284A92B900159AC9 /* AppView.swift in Sources */,
 				42C38F5A284A92B900159AC9 /* TestApp.swift in Sources */,
-				42C38F6B284A95D500159AC9 /* UpdateUserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

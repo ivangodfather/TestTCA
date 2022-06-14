@@ -15,13 +15,7 @@ struct TestApp: App {
 			AppView(
 				store: .init(
 					initialState: .init(),
-					reducer: appReducer.combined(
-						with: updateUserReducer.optional().pullback(
-							state: \.updateUser,
-							action: /AppAction.updateUser,
-							environment: { _ in .init() }
-						)
-					),
+					reducer: appReducer,
 					environment: .init()
 				)
 			)

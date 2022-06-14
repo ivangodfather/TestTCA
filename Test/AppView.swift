@@ -8,73 +8,68 @@
 import ComposableArchitecture
 import SwiftUI
 
-enum AppError: Error {
-	case unkown
-}
-
-struct User: Equatable {
-	let username: String
+struct Item: Equatable, Identifiable {
+	let title: String
+	var id: String { title }
 }
 
 struct AppState: Equatable {
-	var updateUser: UpdateUserState?
-  var isUpdateUserViewPresented: Bool { updateUser != nil }
-	var user: User?
+	var itemStates: IdentifiedArrayOf<ItemState> = [
+		.init(item: .init(title: "First")),
+		.init(item: .init(title: "Second")),
+		.init(item: .init(title: "Third")),
+	]
 }
 enum AppAction: Equatable {
-	case setUpdateUserSheet(isPresented: Bool)
-	case updateUser(UpdateUserAction)
+	case itemAction(id: Item.ID, action: ItemAction)
 }
 
 struct AppEnvironment {}
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment> { state, action, env in
-	switch action {
-	case .setUpdateUserSheet(let isPresented):
-    if isPresented {
-      state.updateUser = .init(user: state.user)
-    } else {
-      state.updateUser = nil
-    }
-		return .none
-	case .updateUser(.userUpdated(.success(let user))):
-		state.user = user
-    return Effect(value: .setUpdateUserSheet(isPresented: false))
-	default:
-		return .none
-	}
+		.none
 }
 
 struct AppView: View {
 	let store: Store<AppState, AppAction>
 
-    var body: some View {
+	var body: some View {
 		WithViewStore(store) { viewStore in
-      VStack {
-        if let user = viewStore.user {
-          HStack {
-            Text("User:")
-            Text(String(describing: user))
-          }
-        }
-        Text("Tap me to show a modal that you can set the user username and open it again and update it 😅")
-        .onTapGesture {
-          viewStore.send(.setUpdateUserSheet(isPresented: true))
-        }
-      }
-			.sheet(
-				isPresented: viewStore.binding(
-					get: \.isUpdateUserViewPresented,
-					send: AppAction.setUpdateUserSheet(isPresented:)
-				)
-			) {
-				IfLetStore(store.scope(state: \.updateUser, action: AppAction.updateUser)) { store in
-					UpdateUserView(store: store)
+			NavigationView {
+				VStack {
+					ForEachStore(
+						self.store.scope(state: \.itemStates, action: AppAction.itemAction(id:action:))
+					) { childStore in
+						WithViewStore(childStore) { childViewStore in
+							NavigationLink(
+								destination: ItemDetailView(store: childStore)
+							) {
+								Text(childViewStore.item.title)
+							}
+						}
+					}
 				}
-
 			}
 		}
-    }
+	}
 }
 
+struct ItemState: Equatable, Identifiable {
+	var item: Item
+	var id: String { item.title }
+}
 
+enum ItemAction: Equatable {
+}
+
+struct ItemDetailView: View {
+	let store: Store<ItemState, ItemAction>
+
+	var body: some View {
+		WithViewStore(store) { viewStore in
+			VStack {
+				Text(viewStore.item.title)
+			}
+		}
+	}
+}
