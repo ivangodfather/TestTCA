@@ -9,8 +9,12 @@ import ComposableArchitecture
 import SwiftUI
 
 struct UpdateUserState: Equatable {
+  init(user: User?) {
+    self.user = user
+    self.username = user?.username ?? ""
+  }
 	var user: User?
-	var username = ""
+  var username: String
 	var isLoading = false
 }
 
@@ -35,7 +39,8 @@ let updateUserReducer = Reducer<UpdateUserState, UpdateUserAction, UpdateUserEnv
 		state.isLoading = true
 		// Perform any environment.updateUserEffect(state.username).catchToEffect.map(userUpdated)
 		let action = UpdateUserAction.userUpdated(.success(User(username: state.username)))
-		return Effect(value: action)
+    return Effect(value: action)
+      .deferred(for: 0.5, scheduler: DispatchQueue.main.eraseToAnyScheduler())
 	case .userUpdated(.success(let user)):
 		return .none // we don't really need to do nothing here since the appReducer will dismiss me and set nil to my optional state
 	case .userUpdated(.failure(let error)):
@@ -50,13 +55,19 @@ struct UpdateUserView: View {
 	var body: some View {
 		WithViewStore(store) { viewStore in
 			VStack {
-				TextField(
-					"Placerholder for username",
-					text: viewStore.binding(
-						get: \.username,
-						send: UpdateUserAction.usernameChanged
-					)
-				)
+        HStack {
+          TextField(
+            "Placerholder for username",
+            text: viewStore.binding(
+              get: \.username,
+              send: UpdateUserAction.usernameChanged
+            )
+          )
+          if viewStore.isLoading {
+            ProgressView()
+              .progressViewStyle(.circular)
+          }
+        }
 				Button("Update user", action: { viewStore.send(.updateUser) })
 			}
 			.onAppear {
